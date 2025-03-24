@@ -1,31 +1,35 @@
-# gestion_usuarios.py
+import hashlib
 
 class GestionUsuarios:
-    def __init__(self):
-        self.usuarios = {}
+    usuarios = {}  # Clase compartida para todos los usuarios {'usuario': {'clave': hash, 'puntaje': int}}
 
-    def crear_cuenta(self, usuario, contraseña):
-        if usuario in self.usuarios:
+    @classmethod
+    def crear_usuario(cls, usuario, contrasena):
+        if usuario in cls.usuarios:
             raise ValueError("El usuario ya existe.")
-        self.usuarios[usuario] = {'contraseña': contraseña, 'puntaje': 0}
+        cls.usuarios[usuario] = {
+            'clave': cls._encriptar(contrasena),
+            'puntaje': 0
+        }
 
-    def iniciar_sesion(self, usuario, contraseña):
-        if usuario in self.usuarios and self.usuarios[usuario]['contraseña'] == contraseña:
-            return True
-        return False
+    @classmethod
+    def validar_usuario(cls, usuario, contrasena):
+        return usuario in cls.usuarios and cls.usuarios[usuario]['clave'] == cls._encriptar(contrasena)
 
-    def cambiar_contraseña(self, usuario, contraseña_vieja, contraseña_nueva):
-        if usuario not in self.usuarios:
-            raise ValueError("El usuario no existe.")
-        if self.usuarios[usuario]['contraseña'] != contraseña_vieja:
-            raise ValueError("Contraseña incorrecta.")
-        self.usuarios[usuario]['contraseña'] = contraseña_nueva
+    @classmethod
+    def cambiar_contrasena(cls, usuario, nueva_contrasena):
+        if usuario in cls.usuarios:
+            cls.usuarios[usuario]['clave'] = cls._encriptar(nueva_contrasena)
 
-    def obtener_puntaje(self, usuario):
-        if usuario in self.usuarios:
-            return self.usuarios[usuario]['puntaje']
-        raise ValueError("El usuario no existe.")
+    @classmethod
+    def sumar_puntaje(cls, usuario, puntos):
+        if usuario in cls.usuarios:
+            cls.usuarios[usuario]['puntaje'] += puntos
 
-    def actualizar_puntaje(self, usuario, puntos):
-        if usuario in self.usuarios:
-            self.usuarios[usuario]['puntaje'] += puntos
+    @classmethod
+    def obtener_puntaje(cls, usuario):
+        return cls.usuarios.get(usuario, {}).get('puntaje', 0)
+
+    @staticmethod
+    def _encriptar(texto):
+        return hashlib.sha256(texto.encode()).hexdigest()
