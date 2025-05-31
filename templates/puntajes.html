@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Puntajes de {{ username }}</title>
+</head>
+<body>
+    <h1>Puntajes de {{ username }}</h1>
+
+    {% if juegos %}
+        <ul>
+        {% for juego in juegos %}
+            <li>
+                Juego ID {{ juego.id }} - Puntos: {{ juego.puntaje }} -
+                <a href="{{ url_for('detalle', game_id=juego.id) }}">Ver detalles</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay puntajes registrados.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('jugar') }}">Volver a jugar</a>
+</body>
+</html>

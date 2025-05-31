@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Batalla Naval</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f8ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #003366;
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            border: 1px solid #ccc;
+            text-align: center;
+            vertical-align: middle;
+            background-color: #e6f2ff;
+        }
+
+        .agua {
+            background-color: #b3d9ff;
+        }
+
+        .impacto {
+            background-color: #ff9999;
+        }
+
+        form.disparo-form {
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            padding: 6px 12px;
+            font-size: 16px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .mensaje {
+            font-size: 18px;
+            color: #cc0000;
+            margin: 15px;
+        }
+
+        .nav-links {
+            margin-top: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            margin: 0 10px;
+            color: #0066cc;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido, {{ usuario }}</h1>
+
+    <table>
+        {% for fila in tablero %}
+        <tr>
+            {% for celda in fila %}
+            <td class="{{ 'impacto' if celda == '💥' else 'agua' if celda == '🌊' else '' }}">{{ celda }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if mensaje %}
+    <p class="mensaje">{{ mensaje }}</p>
+    {% endif %}
+
+    <form class="disparo-form" method="POST">
+        <label>Fila: <input type="number" name="fila" min="0" max="7" required></label>
+        <label>Columna: <input type="number" name="columna" min="0" max="7" required></label>
+        <input type="submit" value="Disparar">
+    </form>
+
+    <div class="nav-links">
+        <a href="{{ url_for('puntajes', username=usuario) }}">Ver puntajes</a>
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+</body>
+</html>
